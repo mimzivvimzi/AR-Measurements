@@ -10,13 +10,19 @@ import UIKit
 import SceneKit
 import ARKit
 
+protocol DistanceDelegate {
+    func didDisplayText(_ distance: String)
+}
+
 class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
+    var delegate: DistanceDelegate?
+    
     var pointNodes = [SCNNode]()
     var measurementNode = SCNNode()
-    let testColor = UIColor(red: 29, green: 141, blue: 182, alpha: 0.9)
+    let testColor = UIColor.purple
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,6 +87,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let b = end.position.y - start.position.y
         let c = end.position.z - start.position.z
         let distance = sqrt(pow(a, 2)+pow(b, 2)+pow(c, 2))
+        let distanceText = String(distance)
+        if let delegateObject = delegate {
+            delegateObject.didDisplayText(distanceText)
+        }
         displayText(text: "\(abs(distance))", atPosition: end.position)
     }
     
