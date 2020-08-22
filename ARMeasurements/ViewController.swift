@@ -24,6 +24,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var measurementNode = SCNNode()
     let testColor = UIColor.purple
     
+    var vertices = [SCNVector3]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         sceneView.delegate = self
@@ -74,6 +76,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         )
         sceneView.scene.rootNode.addChildNode(pointNode)
         pointNodes.append(pointNode)
+        vertices.append(pointNode.position)
+        let linesGeometry = SCNGeometry(sources: [SCNGeometrySource(vertices: vertices)],
+        elements: [SCNGeometryElement(indices: [Int32]([0, 1]), primitiveType: .line)])
+        let line = SCNNode(geometry: linesGeometry)
+        if vertices.count == 2 {
+            sceneView.scene.rootNode.addChildNode(line)
+            vertices = [SCNVector3]()
+        } else if vertices.count > 2 {
+            line.removeFromParentNode()
+        }
         if pointNodes.count >= 2 {
             measure()
         }
