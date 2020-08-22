@@ -66,6 +66,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sphere.materials = [material]
         
         let pointNode = SCNNode(geometry: sphere)
+        pointNode.opacity = 0.8
         pointNode.position = SCNVector3(
             x: hitResult.worldTransform.columns.3.x,
             y: hitResult.worldTransform.columns.3.y,
@@ -86,12 +87,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let a = end.position.x - start.position.x
         let b = end.position.y - start.position.y
         let c = end.position.z - start.position.z
-        let distance = sqrt(pow(a, 2)+pow(b, 2)+pow(c, 2))
-        let distanceText = String(distance)
+        let distance = abs(sqrt(pow(a, 2)+pow(b, 2)+pow(c, 2)))
+        let distanceInCentimeters = 100*distance
+        let distanceText = String(format: "%.2f", distanceInCentimeters)+" cm"
         if let delegateObject = delegate {
             delegateObject.didDisplayText(distanceText)
         }
-        displayText(text: "\(abs(distance))", atPosition: end.position)
+        displayText(text: distanceText, atPosition: end.position)
     }
     
     func displayText(text: String, atPosition position: SCNVector3) {
