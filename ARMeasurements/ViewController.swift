@@ -101,11 +101,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let c = end.position.z - start.position.z
         let distance = abs(sqrt(pow(a, 2)+pow(b, 2)+pow(c, 2)))
         let distanceInCentimeters = 100*distance
-        let distanceText = String(format: "%.2f", distanceInCentimeters)+" cm"
-        if let delegateObject = delegate {
-            delegateObject.didDisplayText(distanceText)
+        switch distanceInCentimeters {
+        case 100...999:
+            let distanceInMeters = distanceInCentimeters/100
+            let distanceText = String(format: "%.2f", distanceInMeters)+" m"
+            displayText(text: distanceText, atPosition: end.position)
+            if let delegateObject = delegate {
+                delegateObject.didDisplayText(distanceText)
+            }
+        default:
+            let distanceText = String(format: "%.2f", distanceInCentimeters)+" cm"
+            displayText(text: distanceText, atPosition: end.position)
+            if let delegateObject = delegate {
+                delegateObject.didDisplayText(distanceText)
+            }
         }
-        displayText(text: distanceText, atPosition: end.position)
     }
     
     func displayText(text: String, atPosition position: SCNVector3) {
